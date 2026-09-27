@@ -1,0 +1,542 @@
+{
+  "name": "My Workflow 11 -copy",
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={\n  \"lead\": {{ JSON.stringify($json.lead) }},\n    \"Location\": {{ $json.Location }}\n   \"Room Type\": {{ $json['Room Type'] }},\n    \"Guest\": {{ $json.Guest }},\n    \"Departure Date\": {{ $json['Departure Date'] }},\n    \"Free Pickup\": {{ $json['Free Pickup?'] }}\n\n  \"listings\": googleSheets tool node \n}\n\n",
+        "options": {
+          "systemMessage": "=You are a Hotel Booking Assistant.\nYour job is to collect user travel information, save it in Google Sheets, and send a helpful email with hotel and restaurant suggestions.\nThen, wait for the user’s reply and record their chosen option.\n\nStep 1: Save User Information\n\nUse Google Sheets to store the user’s details.\n\nSheet name: hotel_sheet\n\nSave all important information such as name, email, location, travel dates, and special requests.\n\nAfter saving, mark the sheet that the data was saved.\n\nStep 2: Send a Suggestion Email\n\nAfter saving the data, send an email to the user with travel suggestions follow the syntext but write your own and suggest form internet top locations and hotel suggestion.\nThe email can be plain text or HTML.\n\nSubject:\nYour Travel Suggestions for {{ $json[\"Special Requests\"] }}\n\nEmail Example:\n\nHi {{ $json.lead.fullName }},\n\nThank you for sharing your travel plan!\nBased on your destination, {{ $json.Location }}, here are some great hotels and restaurants you might like:\n\nTop Hotels:\n\nHotel Name 1 – Close to the main city and very comfortable\n\nHotel Name 2 – Perfect for families and relaxation\n\nHotel Name 3 – Budget-friendly with great reviews\n\nTop Restaurants:\n\nRestaurant Name 1 – Famous for local dishes\n\nRestaurant Name 2 – Best for fine dining\n\nRestaurant Name 3 – Great for quick bites and comfort\n\nPlease reply with the number of your choice, for example 1, 2, or 3, for your preferred hotel or restaurant.\nOnce you reply, I will move to the next step and confirm your booking.\n\nBest regards,\nHotel Booking Assistant\n\nAfter sending the email, mark the sheet that the email was sent.\n\nStep 3: Wait for User Reply\n\nCheck for the user’s reply from the same email address.\n\nWhen a reply comes, understand which number the user chose.\n\nUpdate the Google Sheet with their choice under the “Response” column.\n\nMark that the reply was received.\n\nStep 4: Confirmation\n\nAfter the user’s reply, send a follow-up email confirming their chosen hotel or restaurant and move forward with booking if needed."
+        }
+      },
+      "id": "7a288ba3-0c5b-4a06-967d-a2571ed8e094",
+      "name": "AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        1184,
+        1152
+      ],
+      "typeVersion": 2.2
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "0bce5ecf-ab38-410c-9448-b2a79d9b4181",
+      "name": "Google Gemini Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "position": [
+        1104,
+        1424
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "googlePalmApi": {
+          "id": "StUV1fNdhLzi6Saw",
+          "name": "Google Gemini(PaLM) Api account 5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1gsAKO3wjeJzAbzITTz8oseOAOD2Ro4Owk51V68jBuw8",
+          "mode": "list",
+          "cachedResultName": "Hotel Booking",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1gsAKO3wjeJzAbzITTz8oseOAOD2Ro4Owk51V68jBuw8/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1gsAKO3wjeJzAbzITTz8oseOAOD2Ro4Owk51V68jBuw8/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Full Name": "={{ $json.lead.fullName }}",
+            "Email": "={{ $json.lead.email }}",
+            "Room Type": "={{ $json['Room Type'] }}",
+            "Guests": "={{ $json.Guest }}",
+            "Departure Date": "={{ $json['Departure Date'] }}",
+            "Pickup": "={{ $json['Free Pickup?'] }}",
+            "Request": "={{ $json['Special Requests'] }}",
+            "Location": "={{ $json.Location }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Full Name",
+              "displayName": "Full Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Room Type",
+              "displayName": "Room Type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Guests",
+              "displayName": "Guests",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Departure Date",
+              "displayName": "Departure Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Pickup",
+              "displayName": "Pickup",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Location",
+              "displayName": "Location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Request",
+              "displayName": "Request",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Selected Hotel",
+              "displayName": "Selected Hotel",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        1312,
+        1440
+      ],
+      "id": "8fba77e0-e991-41d2-a793-2582e688f7b2",
+      "name": "hotel_sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "TRwA1bxw56PfCFTi",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "form": "253130849151453"
+      },
+      "type": "n8n-nodes-base.jotFormTrigger",
+      "typeVersion": 1,
+      "position": [
+        672,
+        1152
+      ],
+      "id": "4c0f7658-fe13-4e5a-8f49-62bed1f9666a",
+      "name": "User Input",
+      "webhookId": "648edf02-dd86-431c-b877-190265ae8bc9",
+      "credentials": {
+        "jotFormApi": {
+          "id": "EWa2hCpiaVteSdbT",
+          "name": "JotForm account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "lead_fullName",
+              "name": "lead.fullName",
+              "type": "string",
+              "value": "={{ $json.Name.first }} {{ $json.Name.last }}  "
+            },
+            {
+              "id": "fcc74f06-30ba-4dc4-9272-f06c4efdb9be",
+              "name": "Location",
+              "value": "={{ $json.Location.first }} - {{ $json.Location.last }}",
+              "type": "string"
+            },
+            {
+              "id": "lead_email",
+              "name": "lead.email",
+              "type": "string",
+              "value": "={{ $json['E-mail'] }}"
+            },
+            {
+              "id": "lead_phone",
+              "name": "Room Type",
+              "type": "string",
+              "value": "={{ $json['Room Type'] }}"
+            },
+            {
+              "id": "lead_moveInDate",
+              "name": "Guest",
+              "type": "string",
+              "value": "={{ $json['Number of Guests'] }}"
+            },
+            {
+              "id": "lead_mustHaves",
+              "name": "Departure Date",
+              "type": "string",
+              "value": "={{ $json['Departure Date'].month }} / {{ $json['Departure Date'].day }} / {{ $json['Departure Date'].year }}"
+            },
+            {
+              "id": "lead_submittedAt",
+              "name": "Free Pickup?",
+              "type": "string",
+              "value": "={{ $json['Free Pickup?'] }}"
+            },
+            {
+              "id": "630b484e-5368-4a02-8fa0-98b9e4d03318",
+              "name": "Special Requests",
+              "value": "={{ $json['Special Requests'] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "3d39efaa-5e8f-4497-af4f-e3003dea28e8",
+      "name": "Modify",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        928,
+        1152
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "operation": "sendAndWait",
+        "sendTo": "={{ $('Modify').item.json.lead.email }}",
+        "subject": "=Your Travel Suggestions for {{ $('User Input').item.json.Location.first }}, {{ $('User Input').item.json.Location.last }}",
+        "message": "={{ $json.output }}",
+        "responseType": "freeText",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1536,
+        1152
+      ],
+      "id": "0121cb91-cf6b-43bc-96d9-f0e33bf49cfc",
+      "name": "Send message and wait for response",
+      "webhookId": "de4b1ca9-3ac2-4fca-ac0b-3d964a29e0d3",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "q4pDppvyl3DBQtmI",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1gsAKO3wjeJzAbzITTz8oseOAOD2Ro4Owk51V68jBuw8",
+          "mode": "list",
+          "cachedResultName": "Hotel Booking",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1gsAKO3wjeJzAbzITTz8oseOAOD2Ro4Owk51V68jBuw8/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1gsAKO3wjeJzAbzITTz8oseOAOD2Ro4Owk51V68jBuw8/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Selected Hotel": "={{ $json.data.text }}",
+            "Email": "={{ $('Modify').item.json.lead.email }}"
+          },
+          "matchingColumns": [
+            "Email"
+          ],
+          "schema": [
+            {
+              "id": "Full Name",
+              "displayName": "Full Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Room Type",
+              "displayName": "Room Type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Guests",
+              "displayName": "Guests",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Departure Date",
+              "displayName": "Departure Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Pickup",
+              "displayName": "Pickup",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Location",
+              "displayName": "Location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Request",
+              "displayName": "Request",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Selected Hotel",
+              "displayName": "Selected Hotel",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1744,
+        1152
+      ],
+      "id": "88517738-3b5d-4b87-9a30-bc01a04f3383",
+      "name": "Update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "TRwA1bxw56PfCFTi",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "lead",
+        "Company": "={{ $('Send message and wait for response').item.json.data.text }}",
+        "lastName": "={{ $('Modify').item.json.lead.fullName }}",
+        "additionalFields": {
+          "Description": "={{ $('Modify').item.json['Special Requests'] }}",
+          "Email": "={{ $('Modify').item.json.lead.email }}",
+          "Full_Name": "={{ $('Modify').item.json.lead.fullName }}",
+          "Lead_Source": "website",
+          "Phone": "={{ $('User Input').item.json['Phone Number'].full }}"
+        }
+      },
+      "type": "n8n-nodes-base.zohoCrm",
+      "typeVersion": 1,
+      "position": [
+        1952,
+        1152
+      ],
+      "id": "b4f9794e-445b-4730-bef1-1a8a5b9cf978",
+      "name": "Create a lead",
+      "credentials": {
+        "zohoOAuth2Api": {
+          "id": "pcXqulSuMLxC4qKW",
+          "name": "Zoho account 2"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send message and wait for response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "hotel_sheet": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "User Input": {
+      "main": [
+        [
+          {
+            "node": "Modify",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Modify": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send message and wait for response": {
+      "main": [
+        [
+          {
+            "node": "Update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Create a lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "ad0c7b59-6e4d-4e45-a898-eec9a988ddf7",
+  "meta": {
+    "templateId": "9494",
+    "templateCredsSetupCompleted": true,
+    "instanceId": "5f00bba974abf03cb5183d4d65f8a9645a781b04770df6a7d08284fca87d50b3"
+  },
+  "id": "OhM6TKBADz0RIrng",
+  "tags": []
+}
